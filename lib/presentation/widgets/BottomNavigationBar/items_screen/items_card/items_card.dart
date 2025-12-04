@@ -47,6 +47,10 @@ class _UserItemsCardState extends State<UserItemsCard> {
     setState(() {});
   }
 
+  // void loadHideStatus() async {
+  //   isHide = await HideItemManager.isItemHidden(widget.itemId);
+  //   setState(() {});
+  // }
   void loadHideStatus() async {
     isHide = await HideItemManager.isItemHidden(widget.itemId);
     setState(() {});

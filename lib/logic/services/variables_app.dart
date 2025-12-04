@@ -25,6 +25,9 @@ final TextEditingController myItemScreenSearch = TextEditingController();
 final TextEditingController saveScreenSearch = TextEditingController();
 final TextEditingController reasonController = TextEditingController();
 final TextEditingController requestScreenSearch = TextEditingController();
+final TextEditingController contactScreenfullName = TextEditingController();
+final TextEditingController contactScreenEmail = TextEditingController();
+final TextEditingController contactScreenMessage = TextEditingController();
 
 //////////////////////////////////////////////////////////////
 //////////////         FocusNode            //////////////////
@@ -41,6 +44,9 @@ final FocusNode editProfileNameFocus = FocusNode();
 final FocusNode editProfileEmailFocus = FocusNode();
 final FocusNode editProfilePhoneFocus = FocusNode();
 final FocusNode itemScreenSearchFocus = FocusNode();
+final FocusNode contactScreenfullNameFocus = FocusNode();
+final FocusNode contactScreenEmailFocus = FocusNode();
+final FocusNode aboutScreenMessageFocus = FocusNode();
 
 //////////////////////////////////////////////////////////////
 //////////////         validator            //////////////////

@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:admin_giver_receiver/logic/services/GetCurrentUserData/get_current_user_data.dart';
 import 'package:admin_giver_receiver/logic/services/variables_app.dart';
+import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/chats_screen.dart';
+import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/settings_screen/about_screen.dart';
+import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/settings_screen/contact_screen.dart';
 import 'package:admin_giver_receiver/presentation/screens/auth/edite_profile_screen.dart';
 import 'package:admin_giver_receiver/presentation/screens/save_items_screen/save_items_screen.dart';
 import 'package:admin_giver_receiver/presentation/widgets/BottomNavigationBar/settings_screen/buildListTile.dart';
@@ -155,6 +158,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               divider(),
               buildListTile(
+                icon: Icons.chat,
+                title: "My Chats",
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ChatsScreen(),
+                    ),
+                  );
+                },
+              ),
+              divider(),
+              buildListTile(
                 icon: Icons.settings,
                 title: "Settings",
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
@@ -179,14 +196,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 icon: Icons.info,
                 title: "About",
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AboutScreen(),
+                    ),
+                  );
+                },
               ),
               divider(),
               buildListTile(
                 icon: Icons.phone,
                 title: "Contact us",
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ContactScreen(),
+                    ),
+                  );
+                },
               ),
             ],
           ),
