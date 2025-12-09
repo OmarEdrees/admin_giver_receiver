@@ -2,11 +2,14 @@
 //   CONTROLLER + UI Builder for Requests Screen
 // ---------------------------------------------------------------------
 
+import 'package:admin_giver_receiver/logic/cubit/chat_cubit.dart';
 import 'package:admin_giver_receiver/logic/services/BottomNavigationBar/requests_screen_services/requests_screen_services.dart';
 import 'package:admin_giver_receiver/logic/services/colors_app.dart';
 import 'package:admin_giver_receiver/logic/services/variables_app.dart';
+import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/chats/chat_screen.dart';
 import 'package:admin_giver_receiver/presentation/widgets/BottomNavigationBar/items_screen/items_card/button_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RequestsScreenWidgets {
   final RequestsScreenServices _req = RequestsScreenServices();
@@ -39,30 +42,47 @@ class RequestsScreenWidgets {
 
   // ------------------- تحديث الحالة -------------------
   Future<void> approveRequest(String id) async {
-    await _req.updateStatus(id, "Approved");
+    await _req.updateStatus(id, "approve");
     await loadRequests();
     if (refreshUi != null) refreshUi!();
   }
 
   Future<void> rejectRequest(String id) async {
-    await _req.updateStatus(id, "Rejected");
+    await _req.updateStatus(id, "reject");
     await loadRequests();
     if (refreshUi != null) refreshUi!();
   }
 
   Future<void> convertToDelivery(String id) async {
-    await _req.updateStatus(id, "Delivery");
+    await _req.updateStatus(id, "delivered");
     await loadRequests();
     if (refreshUi != null) refreshUi!();
   }
 
+  ///////////////////////////////////////////////////////////////
+  String generateChatId(String donorId, String requesterId) {
+    final sortedIds = [donorId, requesterId]..sort();
+    return "${sortedIds[0]}_${sortedIds[1]}";
+  }
+
   // ------------------- فتح الشات -------------------
-  void openChat(BuildContext context, String donorId, String requesterId) {
-    // Navigator.pushNamed(
-    //   context,
-    //   "/chat",
-    //   arguments: {"donor_id": donorId, "requester_id": requesterId},
-    // );
+  void openChat(BuildContext context, String adminId, String recipientId) {
+    final ids = [adminId, recipientId]..sort();
+    final chatId = "${ids[0]}_${ids[1]}";
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => BlocProvider(
+          create: (_) => ChatCubit(
+            chatId: chatId,
+            adminId: adminId,
+            recipientId: recipientId,
+          )..loadChat(),
+          child: ChatScreen(chatId: chatId),
+        ),
+      ),
+    );
   }
 
   // ------------------- الكارد -------------------
@@ -79,11 +99,11 @@ class RequestsScreenWidgets {
     final status = req["status"];
     final timeAgo = formatTime(req["created_at"]);
 
-    Color statusColor = status == "Approved"
+    Color statusColor = status == "approve"
         ? Colors.green
-        : status == "Rejected"
+        : status == "reject"
         ? Colors.red
-        : status == "Delivery"
+        : status == "delivered"
         ? Colors.blue
         : Colors.orange;
 
@@ -293,7 +313,7 @@ class RequestsScreenWidgets {
     }
 
     // ---------------------- حالة APPROVED ----------------------
-    if (status == "Approved") {
+    if (status == "approve") {
       return Column(
         children: [
           ButtonWidget(

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:admin_giver_receiver/logic/services/GetCurrentUserData/get_current_user_data.dart';
 import 'package:admin_giver_receiver/logic/services/variables_app.dart';
-import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/chats_screen.dart';
+import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/chats/chat_screen.dart';
 import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/settings_screen/about_screen.dart';
 import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/settings_screen/contact_screen.dart';
 import 'package:admin_giver_receiver/presentation/screens/auth/edite_profile_screen.dart';
@@ -162,12 +162,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 title: "My Chats",
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ChatsScreen(),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => const ChatScreen(chatId: ,),
+                  //   ),
+                  // );
                 },
               ),
               divider(),

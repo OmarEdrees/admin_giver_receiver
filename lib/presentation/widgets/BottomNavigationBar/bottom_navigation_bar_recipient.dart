@@ -1,5 +1,6 @@
 import 'package:admin_giver_receiver/logic/services/colors_app.dart';
-import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/chats_screen.dart';
+import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/chats/chat_screen.dart';
+import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/chats/chats_screen.dart';
 import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/items_screen.dart';
 import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/admin_requests_screen.dart';
 import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/settings_screen/settings_screen..dart';

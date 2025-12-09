@@ -43,6 +43,7 @@ dependencies:
   motion_tab_bar: ^2.0.4
   flutter_localization: ^0.3.3
   font_awesome_flutter: ^10.12.0
+  chat_bubbles: ^1.6.0
 
 dev_dependencies:
   flutter_test:
