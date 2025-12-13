@@ -17,8 +17,8 @@ class RequestsScreenServices {
       donor_id,
       requester_id,
       user_items(title),
-      donor:users!requests_donor_id_fkey(id, full_name),
-      requester:users!requests_requester_id_fkey(id, full_name)
+      donor:users!requests_donor_id_fkey(id, full_name,image),
+      requester:users!requests_requester_id_fkey(id, full_name,image)
     ''')
           .order('created_at', ascending: false);
 

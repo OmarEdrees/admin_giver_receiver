@@ -10,6 +10,7 @@ import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/ch
 import 'package:admin_giver_receiver/presentation/widgets/BottomNavigationBar/items_screen/items_card/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RequestsScreenWidgets {
   final RequestsScreenServices _req = RequestsScreenServices();
@@ -17,6 +18,8 @@ class RequestsScreenWidgets {
   List<Map<String, dynamic>> allRequests = [];
   List<Map<String, dynamic>> filteredRequests = [];
   String selectedStatus = "All";
+  final supabase = Supabase.instance.client;
+  // late final adminId = supabase.auth.currentUser!.id;
 
   RequestsScreenWidgets({this.refreshUi});
 
@@ -66,7 +69,13 @@ class RequestsScreenWidgets {
   }
 
   // ------------------- فتح الشات -------------------
-  void openChat(BuildContext context, String adminId, String recipientId) {
+  void openChatRecipient({
+    required BuildContext context,
+    required String adminId,
+    required String recipientId,
+    required String recipientName,
+    required String recipientImage,
+  }) {
     final ids = [adminId, recipientId]..sort();
     final chatId = "${ids[0]}_${ids[1]}";
 
@@ -74,12 +83,47 @@ class RequestsScreenWidgets {
       context,
       MaterialPageRoute(
         builder: (_) => BlocProvider(
-          create: (_) => ChatCubit(
+          create: (_) => AdminChatCubit(
             chatId: chatId,
             adminId: adminId,
             recipientId: recipientId,
           )..loadChat(),
-          child: ChatScreen(chatId: chatId),
+          child: ChatScreen(
+            chatId: chatId,
+            recipientName: recipientName,
+            recipientImage: recipientImage,
+          ),
+        ),
+      ),
+    );
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  // ------------------- فتح الشات -------------------
+  void openChatDonor({
+    required BuildContext context,
+    required String adminId,
+    required String donorId,
+    required String donorName,
+    required String donorImage,
+  }) {
+    final ids = [adminId, donorId]..sort();
+    final chatId = "${ids[0]}_${ids[1]}";
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => BlocProvider(
+          create: (_) => AdminChatCubit(
+            chatId: chatId,
+            adminId: adminId,
+            recipientId: donorId,
+          )..loadChat(),
+          child: ChatScreen(
+            chatId: chatId,
+            recipientName: donorName,
+            recipientImage: donorImage,
+          ),
         ),
       ),
     );
@@ -88,12 +132,12 @@ class RequestsScreenWidgets {
   // ------------------- الكارد -------------------
   Widget buildRequestCard(BuildContext context, Map<String, dynamic> req) {
     final itemName = req["user_items"]?["title"] ?? "Unknown Item";
+    final donorImage = req["donor"]?["image"] ?? "Unknown Requester";
     final donorName = req["donor"]?["full_name"] ?? "Unknown Donor";
     final donorId = req["donor"]?["id"] ?? "Unknown Donor";
-
     final requesterName = req["requester"]?["full_name"] ?? "Unknown Requester";
+    final requesterImage = req["requester"]?["image"] ?? "Unknown Requester";
     final requesterId = req["requester"]?["id"] ?? "Unknown Requester";
-
     final reason = req["reason"];
     final imageUrl = req["attachment_url"];
     final status = req["status"];
@@ -158,8 +202,9 @@ class RequestsScreenWidgets {
             ],
           ),
 
-          const SizedBox(height: 18),
-
+          const SizedBox(height: 20),
+          Divider(thickness: 1, color: Colors.grey.shade500),
+          const SizedBox(height: 4),
           // ---------------- DONOR & REQUESTER ----------------
           Row(
             children: [
@@ -178,11 +223,46 @@ class RequestsScreenWidgets {
                   ),
                 ),
               ),
+
+              GestureDetector(
+                onTap: () async {
+                  openChatDonor(
+                    context: context,
+                    adminId: supabase.auth.currentUser!.id,
+                    donorId: donorId,
+                    donorName: donorName,
+                    donorImage: donorImage,
+                    // recipientId: donorId,
+                    // recipientName: donorName,
+                    // recipientImage: donorImage,
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors().primaryColor.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppColors().primaryColor,
+                      width: 1.2,
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.chat,
+                    color: AppColors().primaryColor,
+                    size: 20,
+                  ),
+                ),
+              ),
             ],
           ),
 
-          const SizedBox(height: 5),
-
+          const SizedBox(height: 4),
+          Divider(thickness: 1, color: Colors.grey.shade500),
+          const SizedBox(height: 6),
           Row(
             children: [
               Icon(Icons.person, color: AppColors().primaryColor, size: 22),
@@ -199,9 +279,9 @@ class RequestsScreenWidgets {
             ],
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 6),
           Divider(thickness: 1, color: Colors.grey.shade500),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
 
           // ---------------- DETAILS ----------------
           Row(
@@ -230,7 +310,7 @@ class RequestsScreenWidgets {
             ),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
 
           // ---------------- IMAGE ----------------
           ClipRRect(
@@ -257,7 +337,15 @@ class RequestsScreenWidgets {
           const SizedBox(height: 25),
 
           // ---------------- BUTTONS ----------------
-          buildButtons(context, status, req["id"], donorId, requesterId),
+          buildButtons(
+            context,
+            status,
+            req["id"],
+            donorId,
+            requesterId,
+            requesterName,
+            requesterImage,
+          ),
         ],
       ),
     );
@@ -270,6 +358,8 @@ class RequestsScreenWidgets {
     String id,
     String donorId,
     String requesterId,
+    String recipientName,
+    String recipientImage,
   ) {
     // ---------------------- حالة PENDING ----------------------
     if (status == "pending") {
@@ -305,7 +395,13 @@ class RequestsScreenWidgets {
             icon: Icons.chat_bubble_outline,
             title: "Open Chat Session",
             ontap: () async {
-              openChat(context, donorId, requesterId);
+              openChatRecipient(
+                context: context,
+                adminId: donorId,
+                recipientId: requesterId,
+                recipientName: recipientName,
+                recipientImage: recipientImage,
+              );
             },
           ),
         ],
@@ -330,7 +426,13 @@ class RequestsScreenWidgets {
             icon: Icons.chat_bubble_outline,
             title: "Open Chat Session",
             ontap: () async {
-              openChat(context, donorId, requesterId);
+              openChatRecipient(
+                context: context,
+                adminId: donorId,
+                recipientId: requesterId,
+                recipientName: recipientName,
+                recipientImage: recipientImage,
+              );
             },
           ),
         ],
@@ -342,402 +444,14 @@ class RequestsScreenWidgets {
       icon: Icons.chat_bubble,
       title: "Open Chat Session",
       ontap: () async {
-        openChat(context, donorId, requesterId);
+        openChatRecipient(
+          context: context,
+          adminId: donorId,
+          recipientId: requesterId,
+          recipientName: recipientName,
+          recipientImage: recipientImage,
+        );
       },
     );
   }
 }
-
-
-
-// import 'package:admin_giver_receiver/logic/services/BottomNavigationBar/requests_screen_services/requests_screen_services.dart';
-// import 'package:admin_giver_receiver/logic/services/colors_app.dart';
-// import 'package:admin_giver_receiver/logic/services/variables_app.dart';
-// import 'package:admin_giver_receiver/presentation/widgets/BottomNavigationBar/items_screen/items_card/button_widget.dart';
-// import 'package:flutter/material.dart';
-
-
-
-
-
-
-// class RequestsScreenWidgets {
-// List<Map<String, dynamic>> allRequests = [];
-//   List<Map<String, dynamic>> filteredRequests = [];
-
-//   bool isLoading = true;
-//   String selectedStatus = "All";
-// final RequestsScreenServices _req = RequestsScreenServices();
-//    // ------------------- تحميل الطلبات -------------------
-//   Future<void> loadRequests() async {
-//     allRequests = await _req.getAllRequestsForAdmin();
-//     filteredRequests = List.from(allRequests);
-//     setState(() => isLoading = false);
-//   }
-
-//   // ------------------- فلترة الطلبات -------------------
-//   void filterRequests() {
-//     if (selectedStatus == "All") {
-//       filteredRequests = List.from(allRequests);
-//     } else {
-//       filteredRequests = allRequests.where((req) {
-//         return req["status"] == selectedStatus;
-//       }).toList();
-//     }
-//     setState(() {});
-//   }
-
-//    // ------------------- تحديث الحالة -------------------
-//   Future<void> approveRequest(String id) async {
-//     await _req.updateStatus(id, "Approved");
-//     loadRequests();
-//   }
-
-//   Future<void> rejectRequest(String id) async {
-//     await _req.updateStatus(id, "Rejected");
-//     loadRequests();
-//   }
-
-//   Future<void> convertToDelivery(String id) async {
-//     await _req.updateStatus(id, "Delivery");
-//     loadRequests();
-//   }
-
-//   // ------------------- فتح الشات -------------------
-//   void openChat(String donorId, String requesterId) {
-//     // Navigator.pushNamed(
-//     //   context,
-//     //   "/chat",
-//     //   arguments: {"donor_id": donorId, "requester_id": requesterId},
-//     // );
-//   }
-
-
-//   Widget buildRequestCard(Map<String, dynamic> req) {
-//   final itemName = req["user_items"]?["title"] ?? "Unknown Item";
-
-//   final donorName = req["donors"]?["full_name"] ?? "Unknown Donor";
-//   final donorId = req["donors"]?["id"] ?? "Unknown Donor";
-
-//   final requesterName = req["requesters"]?["full_name"] ?? "Unknown Requester";
-//   final requesterId = req["requesters"]?["id"] ?? "Unknown Requester";
-
-//   final reason = req["reason"];
-//   final imageUrl = req["attachment_url"];
-//   final status = req["status"];
-//   final timeAgo = formatTime(req["created_at"]);
-
-//   Color statusColor = status == "Approved"
-//       ? Colors.green
-//       : status == "Rejected"
-//       ? Colors.red
-//       : status == "Converted"
-//       ? Colors.blue
-//       : Colors.orange;
-
-//   return Container(
-//     padding: const EdgeInsets.all(15),
-//     margin: const EdgeInsets.only(bottom: 15),
-//     decoration: BoxDecoration(
-//       color: Colors.white,
-//       borderRadius: BorderRadius.circular(18),
-//       boxShadow: [
-//         BoxShadow(color: Colors.black12, blurRadius: 7, offset: Offset(0, 3)),
-//       ],
-//     ),
-//     child: Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//           children: [
-//             Text(
-//               itemName,
-//               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-//             ),
-//             Container(
-//               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-//               decoration: BoxDecoration(
-//                 color: statusColor.withOpacity(0.15),
-//                 borderRadius: BorderRadius.circular(12),
-//                 border: Border.all(color: statusColor, width: 1.2),
-//               ),
-//               child: Text(
-//                 status,
-//                 style: TextStyle(
-//                   color: statusColor,
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-
-//         SizedBox(height: 10),
-//         Text(
-//           "Donor: $donorName",
-//           style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-//         ),
-//         Text(
-//           "Requester: $requesterName",
-//           style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-//         ),
-
-//         SizedBox(height: 15),
-//         Text(
-//           "Request Details:",
-//           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-//         ),
-//         SizedBox(height: 4),
-//         Text(reason, style: TextStyle(fontSize: 15, color: Colors.grey[800])),
-
-//         SizedBox(height: 15),
-
-//         ClipRRect(
-//           borderRadius: BorderRadius.circular(12),
-//           child: imageUrl != null
-//               ? Image.network(
-//                   imageUrl,
-//                   height: 200,
-//                   width: double.infinity,
-//                   fit: BoxFit.cover,
-//                 )
-//               : Container(
-//                   width: double.infinity,
-//                   height: 200,
-//                   color: Colors.grey[300],
-//                   child: Icon(
-//                     Icons.image_not_supported,
-//                     size: 40,
-//                     color: Colors.grey,
-//                   ),
-//                 ),
-//         ),
-
-//         SizedBox(height: 20),
-
-//         // 🔥 زرار ButtonWidget
-//         buildButtons(status, req["id"], donorId, requesterId),
-//       ],
-//     ),
-//   );
-// }
-// ///////////////////////////////////////////////////////////////////////////////
-
-// Widget buildButtons(
-//   String status,
-//   String id,
-//   String donorId,
-//   String requesterId,
-// ) {
-//   final primary = AppColors().primaryColor;
-
-//   // ----------------------------------------------------------
-//   // 🟠 1) حالة الـ Pending → Approve – Reject – Open Chat
-//   // ----------------------------------------------------------
-//   if (status == "pending") {
-//     return Row(
-//       children: [
-//         Expanded(
-//           child: ButtonWidget(
-//             icon: Icons.check_circle,
-//             title: "Approve",
-//             ontap: () async {
-//               await approveRequest(id);
-//               // 🔄 تحديث الصفحة بعد تنفيذ الطلب
-//             },
-//           ),
-//         ),
-//         const SizedBox(width: 5),
-//         Expanded(
-//           child: ButtonWidget(
-//             icon: Icons.cancel,
-//             title: "Reject",
-//             ontap: () async {
-//               //  await rejectRequest(id);
-//               // 🔄 تحديث الصفحة بعد تنفيذ الرفض
-//             },
-//           ),
-//         ),
-//         const SizedBox(width: 5),
-//         Expanded(
-//           child: ButtonWidget(
-//             icon: Icons.chat_bubble_outline,
-//             title: "Chat",
-//             ontap: () async {
-//               // 📌 فتح صفحة الشات
-//               // 🔽 Navigation
-//               // openChat(donorId, requesterId);
-//             },
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-
-//   // ----------------------------------------------------------
-//   // 🟢 2) حالة Approved → Convert – Chat
-//   // ----------------------------------------------------------
-//   if (status == "Approved") {
-//     return Row(
-//       children: [
-//         Expanded(
-//           child: ButtonWidget(
-//             icon: Icons.delivery_dining,
-//             title: "Convert",
-//             ontap: () async {
-//               //  await convertToDelivery(id);
-//               // 🔄 تحديث الصفحة بعد التحويل
-//             },
-//           ),
-//         ),
-//         const SizedBox(width: 10),
-//         Expanded(
-//           child: ButtonWidget(
-//             icon: Icons.chat,
-//             title: "Chat",
-//             ontap: () async {
-//               // 📌 فتح الشات
-//               // 🔽 Navigation
-//               //  openChat(donorId, requesterId);
-//             },
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-
-//   // ----------------------------------------------------------
-//   // 🔵 3) باقي الحالات → زر واحد للشات فقط
-//   // ----------------------------------------------------------
-//   return ButtonWidget(
-//     icon: Icons.chat_bubble,
-//     title: "Chat Session",
-//     ontap: () async {
-//       // 📌 فتح صفحة الشات
-//       // 🔽 Navigation
-//       //  openChat(donorId, requesterId);
-//     },
-//   );
-// }
-
-
-// }
-
-
-// Widget buildRequestCard(Map<String, dynamic> req) {
-//   final itemName = req["user_items"]?["title"] ?? "Unknown Item";
-//   final donorName = req["users"]?["full_name"] ?? "Unknown Donor";
-//   final donorId = req["requestes"]?["donor_id"] ?? "Unknown Donor";
-//   final requesterName = req["requestes"]?["full_name"] ?? "Unknown Requester";
-//     final requesterId = req["users"]?["id"] ?? "Unknown Requester";
-
-//   final reason = req["reason"];
-//   final imageUrl = req["attachment_url"];
-//   final status = req["status"];
-//   final timeAgo = formatTime(req["created_at"]);
-
-//   Color statusColor = status == "Approved"
-//       ? Colors.green
-//       : status == "Rejected"
-//       ? Colors.red
-//       : status == "Converted"
-//       ? Colors.blue
-//       : Colors.orange;
-
-//   return Container(
-//     padding: const EdgeInsets.all(15),
-//     margin: const EdgeInsets.only(bottom: 15),
-//     decoration: BoxDecoration(
-//       color: Colors.white,
-//       borderRadius: BorderRadius.circular(18),
-//       boxShadow: [
-//         BoxShadow(color: Colors.black12, blurRadius: 7, offset: Offset(0, 3)),
-//       ],
-//     ),
-//     child: Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         // -------------------------------- TITLE ROW --------------------------------
-//         Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//           children: [
-//             Text(
-//               itemName,
-//               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-//             ),
-//             Container(
-//               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-//               decoration: BoxDecoration(
-//                 color: statusColor.withOpacity(0.15),
-//                 borderRadius: BorderRadius.circular(12),
-//                 border: Border.all(color: statusColor, width: 1.2),
-//               ),
-//               child: Text(
-//                 status,
-//                 style: TextStyle(
-//                   color: statusColor,
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-
-//         SizedBox(height: 10),
-//         Text(
-//           "Donor: $donorName",
-//           style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-//         ),
-//         Text(
-//           "Requester: $requesterName",
-//           style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-//         ),
-
-//         SizedBox(height: 15),
-
-//         Text(
-//           "Request Details:",
-//           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-//         ),
-
-//         SizedBox(height: 4),
-//         Text(reason, style: TextStyle(fontSize: 15, color: Colors.grey[800])),
-
-//         SizedBox(height: 15),
-
-//         ClipRRect(
-//           borderRadius: BorderRadius.circular(12),
-//           child: Stack(
-//             children: [
-//               imageUrl != null
-//                   ? Image.network(
-//                       imageUrl,
-//                       height: 200,
-//                       width: double.infinity,
-//                       fit: BoxFit.cover,
-//                     )
-//                   : Container(
-//                       height: 200,
-//                       color: Colors.grey[300],
-//                       child: Icon(
-//                         Icons.image_not_supported,
-//                         size: 40,
-//                         color: Colors.grey,
-//                       ),
-//                     ),
-//               Container(height: 200, color: Colors.black.withOpacity(0.35)),
-//             ],
-//           ),
-//         ),
-
-//         SizedBox(height: 20),
-
-//         // -------------------------------- BUTTONS --------------------------------
-//         buildButtons(status, req["id"],donorId,requesterId),
-//       ],
-//     ),
-//   );
-// }
-
-////////////////////////////////////////////////////////////////////////////////

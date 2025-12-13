@@ -122,14 +122,18 @@ class ChatsScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (_) => BlocProvider(
-                                create: (_) => ChatCubit(
+                                create: (_) => AdminChatCubit(
                                   chatId: chatId,
                                   adminId: myId,
                                   recipientId: chat['user_one_id'] == myId
                                       ? chat['user_two_id']
                                       : chat['user_one_id'],
                                 )..loadChat(),
-                                child: ChatScreen(chatId: chatId),
+                                child: ChatScreen(
+                                  chatId: chatId,
+                                  recipientName: recipientName,
+                                  recipientImage: recipientImage,
+                                ),
                               ),
                             ),
                           );

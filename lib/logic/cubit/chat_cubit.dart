@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'chat_state.dart';
 
-class ChatCubit extends Cubit<ChatState> {
-  ChatCubit({
+class AdminChatCubit extends Cubit<ChatState> {
+  AdminChatCubit({
     required this.chatId,
     required this.adminId,
     required this.recipientId,

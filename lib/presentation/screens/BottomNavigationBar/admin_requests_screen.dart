@@ -34,11 +34,11 @@ class _AdminRequestsScreenState extends State<AdminRequestsScreen> {
     switch (status) {
       case "pending":
         return 1;
-      case "Approved":
+      case "approve":
         return 2;
-      case "Rejected":
+      case "reject":
         return 3;
-      case "Delivery":
+      case "delivered":
         return 4;
       default:
         return 0;
@@ -50,11 +50,11 @@ class _AdminRequestsScreenState extends State<AdminRequestsScreen> {
       case 1:
         return "pending";
       case 2:
-        return "Approved";
+        return "approve";
       case 3:
-        return "Rejected";
+        return "reject";
       case 4:
-        return "Delivery";
+        return "delivered";
       default:
         return "All";
     }
