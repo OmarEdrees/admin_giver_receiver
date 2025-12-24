@@ -87,117 +87,122 @@ class _SaveItemsScreenState extends State<SaveItemsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          const CustomHeader(icon: Icons.save, title: "Save Items"),
-          const SizedBox(height: 15),
+      body: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Column(
+          children: [
+            const CustomHeader(icon: Icons.save, title: "العناصر المحفوظة"),
+            const SizedBox(height: 15),
 
-          // ------------------ البحث ------------------
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 8,
-                  child: TextFormField(
-                    controller: saveScreenSearch,
-                    cursorColor: AppColors().primaryColor,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                      hintText: 'Search for item',
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: AppColors().primaryColor,
+            // ------------------ البحث ------------------
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 8,
+                    child: TextFormField(
+                      controller: saveScreenSearch,
+                      cursorColor: AppColors().primaryColor,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        hintText: 'البحث عن العنصر',
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: AppColors().primaryColor,
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
                       ),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
+                      onChanged: applySearch,
                     ),
-                    onChanged: applySearch,
                   ),
-                ),
 
-                const SizedBox(width: 10),
-                Expanded(
-                  flex: 2,
-                  child: GestureDetector(
-                    onTap: () async {
-                      final result = await showModalBottomSheet(
-                        context: context,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(25),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 2,
+                    child: GestureDetector(
+                      onTap: () async {
+                        final result = await showModalBottomSheet(
+                          context: context,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(25),
+                            ),
                           ),
-                        ),
-                        builder: (context) {
-                          return FilterItemBottomSheet(
-                            categoriesList: _controller.categoriesList,
-                          );
-                        },
-                      );
-
-                      if (result != null) {
-                        applyFilters(
-                          condition: result["condition"],
-                          categoryId: result["category_id"],
+                          builder: (context) {
+                            return FilterItemBottomSheet(
+                              categoriesList: _controller.categoriesList,
+                            );
+                          },
                         );
-                      }
-                    },
-                    child: Container(
-                      height: 55,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Icon(
-                        Icons.filter_list,
-                        color: AppColors().primaryColor,
+
+                        if (result != null) {
+                          applyFilters(
+                            condition: result["condition"],
+                            categoryId: result["category_id"],
+                          );
+                        }
+                      },
+                      child: Container(
+                        height: 55,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Icon(
+                          Icons.filter_list,
+                          color: AppColors().primaryColor,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
 
-          isLoading
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 250),
-                  child: const Center(child: CircularProgressIndicator()),
-                )
-              : filteredSavedItems.isEmpty
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 250),
-                  child: const Center(child: Text("No saved items found")),
-                )
-              : Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(15),
-                    itemCount: filteredSavedItems.length,
-                    itemBuilder: (context, index) {
-                      final item = filteredSavedItems[index];
-                      final List<String> imageUrls = item['images'] != null
-                          ? List<String>.from(item['images'])
-                          : [];
-                      final time = formatTime(item['created_at'] ?? '');
+            isLoading
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 250),
+                    child: const Center(child: CircularProgressIndicator()),
+                  )
+                : filteredSavedItems.isEmpty
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 250),
+                    child: const Center(
+                      child: Text("لم يتم العثور على أي عناصر محفوظة"),
+                    ),
+                  )
+                : Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(15),
+                      itemCount: filteredSavedItems.length,
+                      itemBuilder: (context, index) {
+                        final item = filteredSavedItems[index];
+                        final List<String> imageUrls = item['images'] != null
+                            ? List<String>.from(item['images'])
+                            : [];
+                        final time = formatTime(item['created_at'] ?? '');
 
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: UserItemsCard(
-                          itemId: item['id'],
-                          title: item['title'],
-                          description: item['description'],
-                          timeAgo: time,
-                          imageUrls: imageUrls,
-                          onRefresh: onRefresh,
-                        ),
-                      );
-                    },
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: UserItemsCard(
+                            itemId: item['id'],
+                            title: item['title'],
+                            description: item['description'],
+                            timeAgo: time,
+                            imageUrls: imageUrls,
+                            onRefresh: onRefresh,
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                ),
-        ],
+          ],
+        ),
       ),
     );
   }

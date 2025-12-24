@@ -69,7 +69,7 @@ class SaveProfileUserData {
       final response = await Supabase.instance.client.from('users').insert({
         'id': id,
         'username': username,
-        'email': email,
+        "الايميل": email,
         'full_name': fullName,
         'phone_number': phone,
         'image': imageUrl,

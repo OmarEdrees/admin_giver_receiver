@@ -89,184 +89,194 @@ class _AdminRequestsScreenState extends State<AdminRequestsScreen> {
     final primary = AppColors().primaryColor;
 
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.white, Colors.white, Color(0xFF17A589)],
-            stops: [0.0, 0.7, 1.5],
-          ),
-        ),
-        child: Column(
-          children: [
-            const CustomHeader(
-              icon: Icons.admin_panel_settings,
-              title: "Requests Management",
+      body: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.white, Colors.white, Color(0xFF17A589)],
+              stops: [0.0, 0.7, 1.5],
             ),
-            const SizedBox(height: 15),
+          ),
+          child: Column(
+            children: [
+              const CustomHeader(
+                icon: Icons.admin_panel_settings,
+                title: "إدارة الطلبات",
+              ),
+              const SizedBox(height: 15),
 
-            // ------------------ البحث + الفلترة ------------------
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 🔍 Search Field
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.grey.shade400, width: 1),
-                    ),
-                    child: TextFormField(
-                      controller: requestScreenSearch,
-                      cursorColor: primary,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        hintText: 'Search for Request',
-                        prefixIcon: Icon(Icons.search, color: primary),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(20),
+              // ------------------ البحث + الفلترة ------------------
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 🔍 Search Field
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: Colors.grey.shade400,
+                          width: 1,
                         ),
                       ),
-                      onChanged: (value) {
-                        controller.applyFilters(value);
-                        setState(() {});
-                      },
-                    ),
-                  ),
-
-                  const SizedBox(height: 15),
-
-                  // ----------------- ⭐ TabBar Filter -----------------
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
-                      border: Border.all(color: Colors.grey.shade400, width: 1),
-                    ),
-                    child: DefaultTabController(
-                      length: 5,
-                      initialIndex: _getInitialTabIndex(
-                        controller.selectedStatus,
-                      ),
-                      child: Container(
-                        height: 55,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(25),
+                      child: TextFormField(
+                        controller: requestScreenSearch,
+                        cursorColor: primary,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                          hintText: 'البحث عن الطلب',
+                          prefixIcon: Icon(Icons.search, color: primary),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: Builder(
-                          builder: (context) {
-                            final TabController tabController =
-                                DefaultTabController.of(context);
+                        onChanged: (value) {
+                          controller.applyFilters(value);
+                          setState(() {});
+                        },
+                      ),
+                    ),
 
-                            tabController.addListener(() {
-                              if (!tabController.indexIsChanging) {
-                                controller.selectedStatus = _getStatusFromTab(
-                                  tabController.index,
-                                );
+                    const SizedBox(height: 15),
 
-                                controller.applyFilters(
-                                  requestScreenSearch.text,
-                                );
-                                setState(() {});
-                              }
-                            });
+                    // ----------------- ⭐ TabBar Filter -----------------
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        border: Border.all(
+                          color: Colors.grey.shade400,
+                          width: 1,
+                        ),
+                      ),
+                      child: DefaultTabController(
+                        length: 5,
+                        initialIndex: _getInitialTabIndex(
+                          controller.selectedStatus,
+                        ),
+                        child: Container(
+                          height: 55,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: Builder(
+                            builder: (context) {
+                              final TabController tabController =
+                                  DefaultTabController.of(context);
 
-                            return LayoutBuilder(
-                              builder: (context, constraints) {
-                                return ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth: constraints.maxWidth,
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(25),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 6,
-                                        right: 6,
-                                      ),
-                                      child: TabBar(
-                                        controller: tabController,
-                                        isScrollable: true,
-                                        tabAlignment: TabAlignment.start,
+                              tabController.addListener(() {
+                                if (!tabController.indexIsChanging) {
+                                  controller.selectedStatus = _getStatusFromTab(
+                                    tabController.index,
+                                  );
 
-                                        // No padding issues
-                                        padding: EdgeInsets.zero,
-                                        labelPadding: EdgeInsets.zero,
+                                  controller.applyFilters(
+                                    requestScreenSearch.text,
+                                  );
+                                  setState(() {});
+                                }
+                              });
 
-                                        // Remove underline & default indicator
-                                        indicator: const BoxDecoration(),
-                                        indicatorColor: Colors.transparent,
-                                        dividerColor: Colors.transparent,
-                                        overlayColor: MaterialStateProperty.all(
-                                          Colors.transparent,
+                              return LayoutBuilder(
+                                builder: (context, constraints) {
+                                  return ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxWidth: constraints.maxWidth,
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(25),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 6,
+                                          right: 6,
                                         ),
+                                        child: TabBar(
+                                          controller: tabController,
+                                          isScrollable: true,
+                                          tabAlignment: TabAlignment.start,
 
-                                        tabs: [
-                                          _buildCustomTab(
-                                            "All",
-                                            0,
-                                            tabController,
-                                          ),
-                                          _buildCustomTab(
-                                            "Pending",
-                                            1,
-                                            tabController,
-                                          ),
-                                          _buildCustomTab(
-                                            "Approved",
-                                            2,
-                                            tabController,
-                                          ),
-                                          _buildCustomTab(
-                                            "Rejected",
-                                            3,
-                                            tabController,
-                                          ),
-                                          _buildCustomTab(
-                                            "Delivery",
-                                            4,
-                                            tabController,
-                                          ),
-                                        ],
+                                          // No padding issues
+                                          padding: EdgeInsets.zero,
+                                          labelPadding: EdgeInsets.zero,
+
+                                          // Remove underline & default indicator
+                                          indicator: const BoxDecoration(),
+                                          indicatorColor: Colors.transparent,
+                                          dividerColor: Colors.transparent,
+                                          overlayColor:
+                                              MaterialStateProperty.all(
+                                                Colors.transparent,
+                                              ),
+
+                                          tabs: [
+                                            _buildCustomTab(
+                                              "All",
+                                              0,
+                                              tabController,
+                                            ),
+                                            _buildCustomTab(
+                                              "Pending",
+                                              1,
+                                              tabController,
+                                            ),
+                                            _buildCustomTab(
+                                              "Approved",
+                                              2,
+                                              tabController,
+                                            ),
+                                            _buildCustomTab(
+                                              "Rejected",
+                                              3,
+                                              tabController,
+                                            ),
+                                            _buildCustomTab(
+                                              "Delivery",
+                                              4,
+                                              tabController,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
+                                  );
+                                },
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
 
-            const SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-            // ------------------ الطلبات ------------------
-            Expanded(
-              child: isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : controller.filteredRequests.isEmpty
-                  ? const Center(child: Text("No Requests Found"))
-                  : ListView.builder(
-                      padding: const EdgeInsets.all(15),
-                      itemCount: controller.filteredRequests.length,
-                      itemBuilder: (context, index) {
-                        final req = controller.filteredRequests[index];
+              // ------------------ الطلبات ------------------
+              Expanded(
+                child: isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : controller.filteredRequests.isEmpty
+                    ? const Center(child: Text("لم يتم العثور على أي طلبات"))
+                    : ListView.builder(
+                        padding: const EdgeInsets.all(15),
+                        itemCount: controller.filteredRequests.length,
+                        itemBuilder: (context, index) {
+                          final req = controller.filteredRequests[index];
 
-                        return controller.buildRequestCard(context, req);
-                      },
-                    ),
-            ),
-          ],
+                          return controller.buildRequestCard(context, req);
+                        },
+                      ),
+              ),
+            ],
+          ),
         ),
       ),
     );

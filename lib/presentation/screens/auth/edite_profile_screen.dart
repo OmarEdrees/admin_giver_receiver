@@ -39,7 +39,7 @@ class _EditeProfileScreenState extends State<EditeProfileScreen> {
     setState(() {
       profileData = data;
       editeProfileName.text = profileData?['full_name'] ?? '';
-      editProfileEmail.text = profileData?['email'] ?? '';
+      editProfileEmail.text = profileData?["الايميل"] ?? '';
       editProfilePhone.text = profileData?['phone_number'] ?? '';
     });
   }
@@ -49,7 +49,7 @@ class _EditeProfileScreenState extends State<EditeProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Edite Profile'),
+        title: Text('تعديل البروفايل'),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -59,82 +59,85 @@ class _EditeProfileScreenState extends State<EditeProfileScreen> {
           },
         ),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                // صورة البروفايل
-                GestureDetector(
-                  onTap: _pickImage,
-                  child: CircleAvatar(
-                    radius: 75,
-                    backgroundImage: selectedImage != null
-                        ? FileImage(selectedImage!)
-                        : profileData?['image'] != null
-                        ? NetworkImage(profileData!['image'])
-                        : null,
-                    child:
-                        selectedImage == null && profileData?['image'] == null
-                        ? Icon(
-                            Icons.camera_alt,
-                            size: 40,
-                            color: Colors.grey[700],
-                          )
-                        : null,
-                  ),
-                ),
-                const SizedBox(height: 30),
-                CustomTextFormField(
-                  focusNode: editProfileNameFocus,
-                  controller: editeProfileName,
-                  hintText: 'Full Name',
-                  icon: Icons.person,
-                  validator: addChildNameValidator,
-                ),
-                const SizedBox(height: 20),
-                CustomTextFormField(
-                  focusNode: editProfileEmailFocus,
-                  controller: editProfileEmail,
-                  hintText: 'Email',
-                  icon: Icons.email,
-                  validator: emailValidator,
-                ),
-                const SizedBox(height: 20),
-                CustomTextFormField(
-                  keyboardType: TextInputType.number,
-                  focusNode: editProfilePhoneFocus,
-                  controller: editProfilePhone,
-                  hintText: 'Phone',
-                  icon: Icons.phone,
-                  validator: addChildNameValidator,
-                ),
-                const SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () async {
-                    await currentUserData.updateProfile(context);
-                    Navigator.pop(context, true);
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: AppColors().primaryColor,
-                      borderRadius: BorderRadius.circular(25),
+      body: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // صورة البروفايل
+                  GestureDetector(
+                    onTap: _pickImage,
+                    child: CircleAvatar(
+                      radius: 75,
+                      backgroundImage: selectedImage != null
+                          ? FileImage(selectedImage!)
+                          : profileData?['image'] != null
+                          ? NetworkImage(profileData!['image'])
+                          : null,
+                      child:
+                          selectedImage == null && profileData?['image'] == null
+                          ? Icon(
+                              Icons.camera_alt,
+                              size: 40,
+                              color: Colors.grey[700],
+                            )
+                          : null,
                     ),
-                    child: Center(
-                      child: Text(
-                        'Edit',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                  ),
+                  const SizedBox(height: 30),
+                  CustomTextFormField(
+                    focusNode: editProfileNameFocus,
+                    controller: editeProfileName,
+                    hintText: 'الاسم الكامل',
+                    icon: Icons.person,
+                    validator: addChildNameValidator,
+                  ),
+                  const SizedBox(height: 20),
+                  CustomTextFormField(
+                    focusNode: editProfileEmailFocus,
+                    controller: editProfileEmail,
+                    hintText: "الايميل",
+                    icon: Icons.email,
+                    validator: emailValidator,
+                  ),
+                  const SizedBox(height: 20),
+                  CustomTextFormField(
+                    keyboardType: TextInputType.number,
+                    focusNode: editProfilePhoneFocus,
+                    controller: editProfilePhone,
+                    hintText: "رقم الهاتف",
+                    icon: Icons.phone,
+                    validator: addChildNameValidator,
+                  ),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () async {
+                      await currentUserData.updateProfile(context);
+                      Navigator.pop(context, true);
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: AppColors().primaryColor,
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "تعديل",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

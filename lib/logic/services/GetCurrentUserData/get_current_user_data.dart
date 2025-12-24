@@ -34,7 +34,7 @@ class CurrentUserData {
 
     final updates = {
       'full_name': editeProfileName.text.trim(),
-      'email': editProfileEmail.text.trim(),
+      "الايميل": editProfileEmail.text.trim(),
       'phone_number': editProfilePhone.text.trim(),
       if (imageUrl != null) 'image': imageUrl, // ← نخزن الرابط فقط
     };
@@ -59,7 +59,7 @@ class CurrentUserData {
 
   //   final updates = {
   //     'full_name': editeProfileName.text.trim(),
-  //     'email': editProfileEmail.text.trim(),
+  //     "الايميل": editProfileEmail.text.trim(),
   //     'phone_number': editProfilePhone.text.trim(),
   //     'image': selectedImage,
   //   };

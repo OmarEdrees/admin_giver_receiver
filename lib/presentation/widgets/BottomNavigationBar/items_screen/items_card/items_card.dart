@@ -86,7 +86,7 @@ class _UserItemsCardState extends State<UserItemsCard> {
 
               // ---------------- Title ----------------
               Text(
-                "Delete Item",
+                "حذف العنصر",
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
 
@@ -94,7 +94,7 @@ class _UserItemsCardState extends State<UserItemsCard> {
 
               // ---------------- Content ----------------
               Text(
-                "Are you sure you want to delete this item? This action cannot be undone.",
+                "هل أنت متأكد أنك تريد حذف هذا العنصر؟ لا يمكن التراجع عن هذا الإجراء.",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16, color: Colors.grey[600]),
               ),
@@ -116,7 +116,7 @@ class _UserItemsCardState extends State<UserItemsCard> {
                       ),
                       onPressed: () => Navigator.pop(context, false),
                       child: Text(
-                        "Cancel",
+                        "إلغاء",
                         style: TextStyle(
                           color: Colors.black87,
                           fontSize: 16,
@@ -142,7 +142,7 @@ class _UserItemsCardState extends State<UserItemsCard> {
                       },
 
                       child: Text(
-                        "Delete",
+                        "حذف",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -360,7 +360,7 @@ class _UserItemsCardState extends State<UserItemsCard> {
               Expanded(
                 child: ButtonWidget(
                   icon: Icons.edit,
-                  title: 'Edit',
+                  title: "تعديل",
                   ontap: () async {
                     final result = await Navigator.push(
                       context,
@@ -389,7 +389,7 @@ class _UserItemsCardState extends State<UserItemsCard> {
                     print("Item Saved Status Changed");
                   },
                   icon: Icons.save_outlined,
-                  title: 'Save',
+                  title: 'حفظ',
                   flipColorOnTap: false, // ← لا تغيّر اللون تلقائياً
                   isActive: isSaved, // ← اللون يأتي من حالة الحفظ
                 ),
@@ -403,7 +403,7 @@ class _UserItemsCardState extends State<UserItemsCard> {
                     loadHideStatus(); // ← تحديث اللون فوراً
                   },
                   icon: Icons.visibility_off,
-                  title: 'Hide',
+                  title: 'إخفاء',
                   flipColorOnTap: false, // ← لا تغيّر اللون تلقائياً
                   isActive: isHide, // ← اللون يأتي من حالة الحفظ
                 ),

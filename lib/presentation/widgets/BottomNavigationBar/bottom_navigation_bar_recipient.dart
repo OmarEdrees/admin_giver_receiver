@@ -1,6 +1,7 @@
 import 'package:admin_giver_receiver/logic/services/colors_app.dart';
 import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/chats/chat_screen.dart';
 import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/chats/chats_screen.dart';
+import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/dashboard_overview.dart';
 import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/items_screen.dart';
 import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/admin_requests_screen.dart';
 import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/settings_screen/settings_screen..dart';
@@ -20,8 +21,8 @@ class _MainBottomNavDonorState extends State<MainBottomNavAdmin>
   int _selectedIndex = 0;
 
   late final List<Widget> _pages = [
+    DashboardOverviewScreen(),
     ItemsScreen(),
-    AdminRequestsScreen(),
     ChatsScreen(),
     SettingsScreen(),
   ];
@@ -32,11 +33,11 @@ class _MainBottomNavDonorState extends State<MainBottomNavAdmin>
       body: _pages[_selectedIndex],
 
       bottomNavigationBar: MotionTabBar(
-        initialSelectedTab: 'Items',
-        labels: const ["Items", "Requests", "Chats", "Settings"],
+        initialSelectedTab: 'Dashboard',
+        labels: const ["Dashboard", "Items", "Chats", "Settings"],
         icons: const [
-          Icons.description_outlined,
-          Icons.volunteer_activism_outlined,
+          Icons.home,
+          Icons.description,
           Icons.chat_outlined,
           Icons.settings_outlined,
         ],

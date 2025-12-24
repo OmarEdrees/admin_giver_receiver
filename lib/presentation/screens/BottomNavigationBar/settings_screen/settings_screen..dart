@@ -63,61 +63,64 @@ class _SettingsScreenState extends State<SettingsScreen> {
       //     ),
       //   ],
       // ),
-      body: Center(
-        child: Column(
-          children: [
-            const CustomHeader(icon: Icons.settings, title: 'Settings'),
-            const SizedBox(height: 25),
-            // صورة البروفايل
-            CircleAvatar(
-              radius: 75,
-              backgroundColor: Colors.grey[300],
-              backgroundImage: selectedImage != null
-                  ? FileImage(selectedImage!)
-                  : NetworkImage(
-                          profileData?['image'] ??
-                              'assets/images/autism-high-resolution-logo.png',
-                        )
-                        as ImageProvider, // ضع صورتك هنا
-            ),
-            const SizedBox(height: 15),
-            Text(
-              profileData?['full_name'] ?? '',
+      body: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Center(
+          child: Column(
+            children: [
+              const CustomHeader(icon: Icons.settings, title: 'الإعدادات'),
+              const SizedBox(height: 25),
+              // صورة البروفايل
+              CircleAvatar(
+                radius: 75,
+                backgroundColor: Colors.grey[300],
+                backgroundImage: selectedImage != null
+                    ? FileImage(selectedImage!)
+                    : NetworkImage(
+                            profileData?['image'] ??
+                                'assets/images/autism-high-resolution-logo.png',
+                          )
+                          as ImageProvider, // ضع صورتك هنا
+              ),
+              const SizedBox(height: 15),
+              Text(
+                profileData?['full_name'] ?? '',
 
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              profileData?['phone_number'] ?? '',
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                profileData?['phone_number'] ?? '',
 
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => EditeProfileScreen()),
-                ).then((value) {
-                  if (value == true) {
-                    loadProfile(); // 👈 هذا سيعمل refresh تلقائي
-                  }
-                });
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                  side: const BorderSide(color: Colors.grey),
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => EditeProfileScreen()),
+                  ).then((value) {
+                    if (value == true) {
+                      loadProfile(); // 👈 هذا سيعمل refresh تلقائي
+                    }
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                    side: const BorderSide(color: Colors.grey),
+                  ),
+                ),
+                child: const Text(
+                  "تعديل الملف الشخصي",
+                  style: TextStyle(color: Colors.black),
                 ),
               ),
-              child: const Text(
-                "Edit Profile",
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Container(
@@ -145,7 +148,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               buildListTile(
                 icon: Icons.save,
-                title: "Save Items",
+                title: "العناصر المحفوظة",
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {
                   Navigator.push(
@@ -159,7 +162,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               divider(),
               buildListTile(
                 icon: Icons.chat,
-                title: "My Chats",
+                title: "الدردشات",
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {
                   // Navigator.push(
@@ -173,28 +176,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
               divider(),
               buildListTile(
                 icon: Icons.settings,
-                title: "Settings",
+                title: "الإعدادات",
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {},
               ),
               divider(),
               buildListTile(
                 icon: Icons.lock,
-                title: "Change password",
+                title: "تغيير كلمة المرور",
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {},
               ),
               divider(),
               buildListTile(
                 icon: Icons.card_giftcard_sharp,
-                title: "Refer friends",
+                title: "إحالة الأصدقاء",
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {},
               ),
               divider(),
               buildListTile(
                 icon: Icons.info,
-                title: "About",
+                title: "حول التطبيق",
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {
                   Navigator.push(
@@ -208,7 +211,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               divider(),
               buildListTile(
                 icon: Icons.phone,
-                title: "Contact us",
+                title: "اتصل بنا",
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {
                   Navigator.push(

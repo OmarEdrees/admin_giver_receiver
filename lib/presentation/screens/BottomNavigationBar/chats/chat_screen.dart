@@ -129,17 +129,25 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: controller,
-                    decoration: const InputDecoration(
-                      hintText: 'Type message...',
-                      border: OutlineInputBorder(),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: TextFormField(
+                      controller: controller,
+
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "enter your message",
+                      ),
                     ),
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: () {
+                const SizedBox(width: 10),
+                GestureDetector(
+                  onTap: () {
                     if (controller.text.trim().isEmpty) return;
 
                     context.read<AdminChatCubit>().sendMessage(
@@ -148,6 +156,11 @@ class _ChatScreenState extends State<ChatScreen> {
 
                     controller.clear();
                   },
+                  child: CircleAvatar(
+                    radius: 24,
+                    backgroundColor: AppColors().primaryColor,
+                    child: const Icon(Icons.send, color: Colors.white),
+                  ),
                 ),
               ],
             ),

@@ -8,6 +8,7 @@ import 'package:admin_giver_receiver/logic/services/colors_app.dart';
 import 'package:admin_giver_receiver/logic/services/variables_app.dart';
 import 'package:admin_giver_receiver/presentation/screens/BottomNavigationBar/chats/chat_screen.dart';
 import 'package:admin_giver_receiver/presentation/widgets/BottomNavigationBar/items_screen/items_card/button_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -216,7 +217,7 @@ class RequestsScreenWidgets {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  "Donor: $donorName",
+                  "الواهب: $donorName",
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -251,7 +252,7 @@ class RequestsScreenWidgets {
                     ),
                   ),
                   child: Icon(
-                    Icons.chat,
+                    CupertinoIcons.chat_bubble_fill,
                     color: AppColors().primaryColor,
                     size: 20,
                   ),
@@ -269,7 +270,7 @@ class RequestsScreenWidgets {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  "Requester: $requesterName",
+                  "الموهوب: $requesterName",
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -293,7 +294,7 @@ class RequestsScreenWidgets {
               ),
               const SizedBox(width: 10),
               const Text(
-                "Request Details",
+                "تفاصيل الطلب",
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
             ],
